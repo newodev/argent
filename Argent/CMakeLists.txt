@@ -11,8 +11,7 @@ include_directories("D:/Vulkan/Include/")
 
 
 # Add source to this project's executable.
-add_executable (Argent "VulkanTest.cpp" "Argent.h" )
-
+add_executable (Argent "VulkanTest.cpp" "Argent.h"  "Assets/ModelLoader.h" "Assets/ModelFormat.h")
 target_link_libraries(Argent "D:/Vulkan/Lib/vulkan-1.lib")
 target_link_libraries(Argent "D:/gamedev/Libraries/glfw3.3.7/lib-vc2022/glfw3.lib")
 

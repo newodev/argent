@@ -34,8 +34,8 @@
 
 #include <array>
 
-const std::string MODEL_PATH = "TestModels/rock.obj";
-const std::string TEXTURE_PATH = "TestTextures/rock.jpg";
+const std::string MODEL_PATH = "TestModels/viking_room.obj";
+const std::string TEXTURE_PATH = "TestTextures/viking_room.png";
 
 // Solves weird max macro error
 #undef max
