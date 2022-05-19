@@ -17,9 +17,6 @@
 #include <cstdint>
 #include <fstream>
 
-#define TINYOBJLOADER_IMPLEMENTATION
-#include <tiny_obj_loader.h>
-
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
@@ -33,6 +30,7 @@
 #include <chrono>
 
 #include <array>
+#include <ModelLoader.h>
 
 const std::string MODEL_PATH = "TestModels/viking_room.obj";
 const std::string TEXTURE_PATH = "TestTextures/viking_room.png";
@@ -44,55 +42,6 @@ const uint32_t WIDTH = 1000;
 const uint32_t HEIGHT = 600;
 
 const int MAX_FRAMES_IN_FLIGHT = 2;
-
-struct Vertex 
-{
-    glm::vec3 pos;
-    glm::vec2 uv;
-
-    bool operator==(const Vertex& other) const 
-    {
-        return pos == other.pos && uv == other.uv;
-    }
-
-    static VkVertexInputBindingDescription getBindingDescription() 
-    {
-        VkVertexInputBindingDescription bindingDescription{};
-        bindingDescription.binding = 0;
-        bindingDescription.stride = sizeof(Vertex);
-        bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX; // Here we can change to per-instance mode
-
-        return bindingDescription;
-    }
-
-    static std::array<VkVertexInputAttributeDescription, 2> getAttributeDescriptions() 
-    {
-        std::array<VkVertexInputAttributeDescription, 2> attributeDescriptions{};
-        attributeDescriptions[0].binding = 0;
-        attributeDescriptions[0].location = 0;
-        attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT; // Size of the attribute. Vec3
-        attributeDescriptions[0].offset = offsetof(Vertex, pos);
-
-        attributeDescriptions[1].binding = 0;
-        attributeDescriptions[1].location = 1;
-        attributeDescriptions[1].format = VK_FORMAT_R32G32_SFLOAT; // Size of the attribute. Vec2
-        attributeDescriptions[1].offset = offsetof(Vertex, uv);
-
-        return attributeDescriptions;
-    }
-};
-
-namespace std
-{
-    template<> struct hash<Vertex>
-    {
-        size_t operator()(Vertex const& vertex) const
-        {
-            return (hash<glm::vec3>()(vertex.pos)) ^
-                (hash<glm::vec2>()(vertex.uv) << 1);
-        }
-    };
-}
 
 
 struct UniformBufferObject 
@@ -218,7 +167,7 @@ private:
 
     uint32_t currentFrame = 0;
 
-    std::vector<Vertex> vertices;
+    std::vector<ag::Vertex> vertices;
     std::vector<uint32_t> indices;
 
     bool framebufferResized = false;
@@ -269,7 +218,7 @@ private:
         createTextureImageView();
         createTextureSampler();
 
-        loadModel();
+        ag::asset::loadModel(&vertices, &indices, MODEL_PATH);
         createVertexBuffer();
         createIndexBuffer();
         createUniformBuffers();
@@ -280,47 +229,6 @@ private:
 
 
         createSyncObjects();
-    }
-
-    void loadModel()
-    {
-        tinyobj::attrib_t attrib;
-        std::vector<tinyobj::shape_t> shapes;
-        std::vector<tinyobj::material_t> materials;
-        std::string warn, err;
-
-        std::unordered_map<Vertex, uint32_t> uniqueVertices{};
-
-        if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, MODEL_PATH.c_str())) 
-        {
-            throw std::runtime_error(warn + err);
-        }
-
-        for (const auto& shape : shapes) 
-        {
-            for (const auto& index : shape.mesh.indices)
-            {
-                Vertex vertex{};
-
-                vertex.pos = {
-                    attrib.vertices[3 * index.vertex_index + 0],
-                    attrib.vertices[3 * index.vertex_index + 1],
-                    attrib.vertices[3 * index.vertex_index + 2]
-                };
-
-                vertex.uv = {
-                    attrib.texcoords[2 * index.texcoord_index + 0],
-                    1.0f - attrib.texcoords[2 * index.texcoord_index + 1]
-                };
-
-                if (uniqueVertices.count(vertex) == 0) {
-                    uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
-                    vertices.push_back(vertex);
-                }
-
-                indices.push_back(uniqueVertices[vertex]);
-            }
-        }
     }
 
     void createIndexBuffer()
@@ -1175,8 +1083,8 @@ private:
         // This currently describes per-vertex data. Could change to per-instance later
         VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
         vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-        auto bindingDescription = Vertex::getBindingDescription();
-        auto attributeDescriptions = Vertex::getAttributeDescriptions();
+        auto bindingDescription = ag::Vertex::getBindingDescription();
+        auto attributeDescriptions = ag::Vertex::getAttributeDescriptions();
         vertexInputInfo.vertexBindingDescriptionCount = 1;
         vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
         vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;

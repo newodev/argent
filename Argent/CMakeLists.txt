@@ -8,10 +8,10 @@ include_directories("D:/gamedev/Libraries/stb/")
 include_directories("D:/gamedev/Libraries/tinyobj/")
 include_directories("D:/Vulkan/Include/")
 
-
-
 # Add source to this project's executable.
-add_executable (Argent "VulkanTest.cpp" "Argent.h"  "Assets/ModelLoader.h" "Assets/ModelFormat.h")
+add_executable (Argent "Argent.h" "VulkanTest.cpp" "Assets/ModelFormat.h" "Assets/ModelLoader.h")
+
+target_include_directories(Argent PRIVATE "Assets/")
 target_link_libraries(Argent "D:/Vulkan/Lib/vulkan-1.lib")
 target_link_libraries(Argent "D:/gamedev/Libraries/glfw3.3.7/lib-vc2022/glfw3.lib")
 

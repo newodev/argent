@@ -51,9 +51,9 @@ namespace ag
 // Vertex hash function so it can be used in unordered collections
 namespace std
 {
-    template<> struct hash<Vertex>
+    template<> struct hash<ag::Vertex>
     {
-        size_t operator()(Vertex const& vertex) const
+        size_t operator()(ag::Vertex const& vertex) const
         {
             return (hash<glm::vec3>()(vertex.pos)) ^
                 (hash<glm::vec2>()(vertex.uv) << 1);

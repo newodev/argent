@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Assets/ModelFormat.h>
-#include <Argent.h>
+#include <ModelFormat.h>
+#include <vector>
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
@@ -13,7 +13,7 @@ namespace ag
 {
 	namespace asset
 	{
-		void loadModel(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, std::string )
+		void loadModel(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, std::string path)
         {
             tinyobj::attrib_t attrib;
             std::vector<tinyobj::shape_t> shapes;
@@ -23,7 +23,7 @@ namespace ag
             /// \TODO: Use a different map type. This is not optimal
             std::unordered_map<Vertex, uint32_t> uniqueVertices{};
 
-            if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, MODEL_PATH.c_str()))
+            if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, path.c_str()))
             {
                 throw std::runtime_error(warn + err);
             }
