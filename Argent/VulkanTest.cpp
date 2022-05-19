@@ -24,13 +24,12 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/hash.hpp>
 
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
-
 #include <chrono>
 
 #include <array>
+
 #include <ModelLoader.h>
+#include <TextureLoader.h>
 
 const std::string MODEL_PATH = "TestModels/viking_room.obj";
 const std::string TEXTURE_PATH = "TestTextures/viking_room.png";
@@ -218,7 +217,7 @@ private:
         createTextureImageView();
         createTextureSampler();
 
-        ag::asset::loadModel(&vertices, &indices, MODEL_PATH);
+        ag::asset::LoadModel(&vertices, &indices, MODEL_PATH);
         createVertexBuffer();
         createIndexBuffer();
         createUniformBuffers();
@@ -468,15 +467,10 @@ private:
     void createTextureImage()
     {
         int texWidth, texHeight, texChannels;
-        stbi_uc* pixels = stbi_load(TEXTURE_PATH.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+        UCHAR* pixels = ag::asset::LoadTexture(TEXTURE_PATH.c_str(), &texWidth, &texHeight);
         VkDeviceSize imageSize = texWidth * texHeight * 4; // 4 bytes per pixel
 
         mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(texWidth, texHeight)))) + 1;
-
-        if (!pixels)
-        {
-            throw std::runtime_error("Could not load texture image");
-        }
 
         // We upload the image to a fast staging buffer, then copy to the image unit
         VkBuffer stagingBuffer;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ModelFormat.h>
+#include <Vertex.h>
 #include <vector>
 
 #define TINYOBJLOADER_IMPLEMENTATION
@@ -13,7 +13,7 @@ namespace ag
 {
 	namespace asset
 	{
-		void loadModel(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, std::string path)
+		void LoadModel(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices, std::string path)
         {
             tinyobj::attrib_t attrib;
             std::vector<tinyobj::shape_t> shapes;
