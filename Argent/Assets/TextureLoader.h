@@ -4,6 +4,9 @@
 #include <stb_image.h>
 
 #include <string>
+#include <stdexcept>
+
+typedef unsigned char UCHAR;
 /// \TODO: Probably change to a more standardised image loader
 
 namespace ag
@@ -22,6 +25,11 @@ namespace ag
 			}
 
 			return pixels;
+		}
+
+		void UnloadTexture(UCHAR* texture)
+		{
+			stbi_image_free(texture);
 		}
 	}
 }

@@ -30,6 +30,7 @@
 
 #include <ModelLoader.h>
 #include <TextureLoader.h>
+#include <IDRegistry.h>
 
 const std::string MODEL_PATH = "TestModels/viking_room.obj";
 const std::string TEXTURE_PATH = "TestTextures/viking_room.png";
@@ -37,8 +38,8 @@ const std::string TEXTURE_PATH = "TestTextures/viking_room.png";
 // Solves weird max macro error
 #undef max
 
-const uint32_t WIDTH = 1000;
-const uint32_t HEIGHT = 600;
+const uint32_t WIDTH = 1920;
+const uint32_t HEIGHT = 1080;
 
 const int MAX_FRAMES_IN_FLIGHT = 2;
 
@@ -466,7 +467,7 @@ private:
 
     void createTextureImage()
     {
-        int texWidth, texHeight, texChannels;
+        int texWidth, texHeight;
         UCHAR* pixels = ag::asset::LoadTexture(TEXTURE_PATH.c_str(), &texWidth, &texHeight);
         VkDeviceSize imageSize = texWidth * texHeight * 4; // 4 bytes per pixel
 
@@ -483,7 +484,7 @@ private:
         memcpy(data, pixels, static_cast<size_t>(imageSize));
         vkUnmapMemory(device, stagingBufferMemory);
 
-        stbi_image_free(pixels);
+        ag::asset::UnloadTexture(pixels);
 
         createImage(texWidth, texHeight, mipLevels, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, textureImage, textureImageMemory);
 
@@ -1738,9 +1739,9 @@ private:
 
         auto currentTime = std::chrono::high_resolution_clock::now();
         float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
-
+        float sin = glm::sin(time) * glm::radians(45.0f);
         UniformBufferObject ubo{};
-        ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        ubo.model = glm::rotate(glm::mat4(1.0f), sin, glm::vec3(0.0f, 0.0f, 1.0f));
         ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         ubo.proj = glm::perspective(glm::radians(45.0f), swapChainExtent.width / (float)swapChainExtent.height, 0.1f, 10.0f);
         ubo.proj[1][1] *= -1;
@@ -1802,14 +1803,21 @@ private:
     }
 };
 
-int main() {
+int main() 
+{
+    // return useApp();
+
+}
+
+int useApp()
+{
     HelloTriangleApplication app;
 
-    try 
+    try
     {
         app.run();
     }
-    catch (const std::exception& e) 
+    catch (const std::exception& e)
     {
         std::cerr << e.what() << std::endl;
         return EXIT_FAILURE;
