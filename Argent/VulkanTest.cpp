@@ -30,6 +30,7 @@
 
 #include <ModelLoader.h>
 #include <TextureLoader.h>
+
 #include <IDRegistry.h>
 
 const std::string MODEL_PATH = "TestModels/viking_room.obj";
@@ -1838,10 +1839,10 @@ struct B
         b = a;
     }
 };
-int main() 
+int main()
 {
     //return useApp();
-    ag::ArchetypeCollection a(2);
+    ag::ArchetypeCollection a({ ag::IDRegistry::GetComponentID<A>(), ag::IDRegistry::GetComponentID<B>() });
 
     a.SpawnEntity(A(1), B(2));
 }

@@ -1,5 +1,4 @@
 #pragma once
-#include <IDRegistry.h>
 #include <ECS.h>
 
 namespace ag
