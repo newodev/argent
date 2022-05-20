@@ -1803,12 +1803,6 @@ private:
     }
 };
 
-int main() 
-{
-    // return useApp();
-
-}
-
 int useApp()
 {
     HelloTriangleApplication app;
@@ -1824,4 +1818,30 @@ int useApp()
     }
 
     return EXIT_SUCCESS;
+}
+
+
+struct A
+{
+    int a;
+    A(int b)
+    {
+        a = b;
+    }
+};
+
+struct B
+{
+    int b;
+    B(int a)
+    {
+        b = a;
+    }
+};
+int main() 
+{
+    //return useApp();
+    ag::ArchetypeCollection a(2);
+
+    a.SpawnEntity(A(1), B(2));
 }
