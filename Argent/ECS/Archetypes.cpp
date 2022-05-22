@@ -1,12 +1,13 @@
 #include <Archetypes.h>
 
 std::unordered_map<ArchetypeID, ag::ArchetypeCollection*> ag::ArchetypeCollection::archetypes{};
+std::atomic<ArchetypeID> ag::ArchetypeCollection::nextArchetypeID(0);
 
 ag::ArchetypeCollection::ArchetypeCollection(ComponentSet components)
 {
 	std::sort(components.begin(), components.end());
-	ID = ArchetypeCollection::GetArchetypeID(components);
-	NextEntityID = (EntityID)ID << EPARTSIZE;
+	ID = ++nextArchetypeID;
+	NextEntityID = ((EntityID)ID) << EPARTSIZE;
 
 	EntityCount = 0;
 
@@ -21,8 +22,7 @@ void ag::ArchetypeCollection::AddComponent(byte* bytes, int i, int n)
 
 EntityID ag::ArchetypeCollection::GetNextID()
 {
-	return NextEntityID;
-	NextEntityID++;
+	return NextEntityID++;
 }
 
 void ag::ArchetypeCollection::RegisterArchetype(ArchetypeCollection* archetype)
@@ -42,6 +42,7 @@ ag::ArchetypeCollection* ag::ArchetypeCollection::GetArchetypeFromEntityID(Entit
 }
 
 // Hashes a set of components to an ID
+/*
 ArchetypeID ag::ArchetypeCollection::GetArchetypeID(ComponentSet components)
 {
 	ArchetypeID result = (ArchetypeID)components.size();
@@ -51,4 +52,4 @@ ArchetypeID ag::ArchetypeCollection::GetArchetypeID(ComponentSet components)
 	}
 	return result;
 }
-
+*/

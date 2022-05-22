@@ -11,14 +11,36 @@ namespace ag
 	class ArchetypeCollection
 	{
 	public:
+
+		/// \TODO: Buffer entity spawning
+		/// \TODO: Add+Buffer entity destruction
+
+
 		template <typename... Cs>
-		void SpawnEntity(Cs... components)
+		EntityID SpawnEntity(Cs... component)
 		{
-			entities.push_back(Entity(GetNextID(), 0));
+			return InstantiateEntity(0, component...);
+		}
+
+		template <typename... Cs>
+		EntityID SpawnChild(EntityID parent, Cs... component)
+		{
+			return InstantiateEntity(parent, component...);
+		}
+
+		template <typename... Cs>
+		EntityID InstantiateEntity(EntityID parent, Cs... component)
+		{
+			EntityID eid = GetNextID();
+			entities.push_back(Entity(eid, parent));
 
 			int i = 0;
 			// We assume the components are in the order matching the archetype and add them to each component array
-			(AddComponent((byte*)&components, i++, sizeof(components)), ...);
+			(AddComponent((byte*)&component, i++, sizeof(component)), ...);
+
+			EntityCount++;
+
+			return eid;
 		}
 
 		template <typename C>
@@ -36,16 +58,20 @@ namespace ag
 			return ID;
 		}
 
+		int GetEntityCount() { return EntityCount; }
+
 		ArchetypeCollection(ComponentSet components);
 
 		static ArchetypeCollection* GetArchetypeFromEntityID(EntityID id);
 
 		// Hashes a set of components to an ID
-		static ArchetypeID GetArchetypeID(ComponentSet components);
+		//static ArchetypeID GetArchetypeID(ComponentSet components);
 
 		static void RegisterArchetype(ArchetypeCollection* archetype);
 
 		static void DeregisterArchetype(ArchetypeID id);
+
+		
 
 	private:
 		ArchetypeID ID;
@@ -55,16 +81,18 @@ namespace ag
 		ComponentSet ComponentTypes;
 		// The amount of entities currently in the collection
 		int EntityCount;
-		// The ID of the next entity to spawn
-		int NextEntityID;
+
 		// Core entity data (a component that every entity has)
 		std::vector<Entity> entities;
 
 		void AddComponent(byte* bytes, int i, int n);
 
 		EntityID GetNextID();
+		// The ID of the next entity to spawn
+		EntityID NextEntityID;
 
 		static std::unordered_map<ArchetypeID, ArchetypeCollection*> archetypes;
+		static std::atomic<ArchetypeID> nextArchetypeID;
 	};
 }
 
