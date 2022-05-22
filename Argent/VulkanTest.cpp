@@ -32,6 +32,7 @@
 #include <TextureLoader.h>
 
 #include <IDRegistry.h>
+#include <Archetypes.h>
 
 const std::string MODEL_PATH = "TestModels/viking_room.obj";
 const std::string TEXTURE_PATH = "TestTextures/viking_room.png";
@@ -1845,4 +1846,9 @@ int main()
     ag::ArchetypeCollection a({ ag::IDRegistry::GetComponentID<A>(), ag::IDRegistry::GetComponentID<B>() });
 
     a.SpawnEntity(A(1), B(2));
+
+    std::cout << a.GetComponent<A>(0)->a << std::endl;
+    a.GetComponent<A>(0)->a = 10;
+    std::cout << a.GetComponent<A>(0)->a << std::endl;
+    std::cout << a.GetComponent<B>(0)->b << std::endl;
 }
