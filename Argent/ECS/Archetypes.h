@@ -50,7 +50,7 @@ namespace ag
 			// The component array that stores this component type
 			auto ci = std::find(ComponentTypes.begin(), ComponentTypes.end(), ag::IDRegistry::GetComponentID<C>()) - ComponentTypes.begin();
 			// Return a pointer to the component
-			return (C*)(&data[ci].at(i));
+			return (C*)(&data[ci].at(i * stride));
 		}
 
 		ArchetypeID GetID()
