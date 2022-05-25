@@ -8,7 +8,6 @@
 
 typedef unsigned char UCHAR;
 /// \TODO: Probably change to a more standardised image loader
-
 namespace ag
 {
 	namespace asset

@@ -9,6 +9,9 @@
 #include <unordered_map>
 #include <string>
 
+
+/// \TODO: A model loader should store models in various LODs that are near the player.
+/// \TODO: After a model hasn't been used for a while, unload it.
 namespace ag
 {
 	namespace asset
@@ -20,7 +23,6 @@ namespace ag
             std::vector<tinyobj::material_t> materials;
             std::string warn, err;
 
-            /// \TODO: Use a different map type. This is not optimal
             std::unordered_map<Vertex, uint32_t> uniqueVertices{};
 
             if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, path.c_str()))
