@@ -7,6 +7,7 @@ ag::ArchetypeCollection::ArchetypeCollection(ComponentSet components)
 {
 	std::sort(components.begin(), components.end());
 	ID = ++nextArchetypeID;
+	// Initialises the first entity's ID by mapping the archetype ID into the upper bits
 	NextEntityID = ((EntityID)ID) << EPARTSIZE;
 
 	EntityCount = 0;
@@ -39,6 +40,29 @@ ag::ArchetypeCollection* ag::ArchetypeCollection::GetArchetypeFromEntityID(Entit
 {
 	ArchetypeID archID = id >> EPARTSIZE;
 	return archetypes[archID];
+}
+
+int ag::ArchetypeCollection::GetIndexByID(EntityID id)
+{
+	// Binary search for the entity's ID
+	int lo = 0;
+	int hi = entities.size() - 1;
+
+	while (lo <= hi)
+	{
+		int mid = (lo + hi) / 2;
+
+		if (id == entities[mid].ID)
+			return mid;
+
+		else if (id < entities[mid].ID)
+			hi = mid - 1;
+
+		else if (id > entities[mid].ID)
+			lo = mid + 1;
+	}
+
+	return -1;
 }
 
 // Hashes a set of components to an ID

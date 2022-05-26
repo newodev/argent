@@ -24,7 +24,7 @@ namespace ag
 	};
 
 	/// \TODO: Buffers could sub-allocate from a single large buffer, ie. they just index into a big block of memory
-	///			- See https://developer.nvidia.com/vulkan-memory-management
+	///			- See https://developer.nvidia.com/vulkan-memory-management 
 	/// \TODO: Use one big memory allocation, and buffers for each usage type
 	class Buffer
 	{

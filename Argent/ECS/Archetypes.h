@@ -58,14 +58,13 @@ namespace ag
 			return ID;
 		}
 
+		int GetIndexByID(EntityID id);
+
 		int GetEntityCount() { return EntityCount; }
 
 		ArchetypeCollection(ComponentSet components);
 
 		static ArchetypeCollection* GetArchetypeFromEntityID(EntityID id);
-
-		// Hashes a set of components to an ID
-		//static ArchetypeID GetArchetypeID(ComponentSet components);
 
 		static void RegisterArchetype(ArchetypeCollection* archetype);
 

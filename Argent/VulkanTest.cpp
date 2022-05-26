@@ -1857,7 +1857,9 @@ int main()
     std::cout << "a: " << one << std::endl;
     std::cout << "b: " << two << std::endl;
 
-    std::cout << "b points to: " << *b.GetComponent<EntityID>(0) << std::endl;
+    EntityID bpointer = *b.GetComponent<EntityID>(0);
+    int aindex = a.GetIndexByID(bpointer);
+    std::cout << "b points to: " << a.GetComponent<A>(aindex)->a << " " << a.GetComponent<B>(aindex)->b << std::endl;
 
     std::cout << "iter: " << std::endl;
     for (size_t i = 0; i < a.GetEntityCount(); i++)
