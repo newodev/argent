@@ -7,6 +7,7 @@ ag::ArchetypeCollection::ArchetypeCollection(ComponentSet components)
 {
 	std::sort(components.begin(), components.end());
 	ID = ++nextArchetypeID;
+	RegisterArchetype(this);
 	// Initialises the first entity's ID by mapping the archetype ID into the upper bits
 	NextEntityID = ((EntityID)ID) << EPARTSIZE;
 

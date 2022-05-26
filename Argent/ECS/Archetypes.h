@@ -32,7 +32,7 @@ namespace ag
 		EntityID InstantiateEntity(EntityID parent, Cs... component)
 		{
 			EntityID eid = GetNextID();
-			entities.push_back(Entity(eid, parent));
+			entities.push_back(EntityInfo(eid, parent));
 
 			int i = 0;
 			// We assume the components are in the order matching the archetype and add them to each component array
@@ -82,7 +82,7 @@ namespace ag
 		int EntityCount;
 
 		// Core entity data (a component that every entity has)
-		std::vector<Entity> entities;
+		std::vector<EntityInfo> entities;
 
 		void AddComponent(byte* bytes, int i, int n);
 

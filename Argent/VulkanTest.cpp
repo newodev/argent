@@ -34,6 +34,7 @@
 
 #include <IDRegistry.h>
 #include <Archetypes.h>
+#include <Entity.h>
 
 const std::string MODEL_PATH = "TestModels/viking_room.obj";
 const std::string TEXTURE_PATH = "TestTextures/viking_room.png";
@@ -1858,8 +1859,8 @@ int main()
     std::cout << "b: " << two << std::endl;
 
     EntityID bpointer = *b.GetComponent<EntityID>(0);
-    int aindex = a.GetIndexByID(bpointer);
-    std::cout << "b points to: " << a.GetComponent<A>(aindex)->a << " " << a.GetComponent<B>(aindex)->b << std::endl;
+    ag::Entity wone = ag::Entity(bpointer);
+    std::cout << "b points to: " << wone.Get<A>()->a << " " << wone.Get<B>()->b << std::endl;
 
     std::cout << "iter: " << std::endl;
     for (size_t i = 0; i < a.GetEntityCount(); i++)

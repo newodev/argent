@@ -18,12 +18,12 @@ typedef std::vector<byte> ComponentArray;
 
 namespace ag
 {
-	struct Entity
+	struct EntityInfo
 	{
 		EntityID ID;
 		EntityID ParentID;
 
-		Entity(EntityID id, EntityID p)
+		EntityInfo(EntityID id, EntityID p)
 		{
 			ID = id;
 			ParentID = p;
