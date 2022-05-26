@@ -5,6 +5,8 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/hash.hpp>
 
+#include <vulkan/vulkan.hpp>
+
 namespace ag
 {
     struct Vertex
@@ -20,30 +22,34 @@ namespace ag
             return pos == other.pos && uv == other.uv;
         }
 
-        static VkVertexInputBindingDescription getBindingDescription()
+        static vk::VertexInputBindingDescription getBindingDescription()
         {
-            VkVertexInputBindingDescription bindingDescription{};
-            bindingDescription.binding = 0;
-            bindingDescription.stride = sizeof(Vertex);
-            bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX; // Here we can change to per-instance mode
+            vk::VertexInputBindingDescription bindingDesc(
+                0,
+                sizeof(Vertex),
+                vk::VertexInputRate::eVertex  // Here we can change to per-instance mode
+            );
 
-            return bindingDescription;
+            return bindingDesc;
         }
 
-        static std::array<VkVertexInputAttributeDescription, 2> getAttributeDescriptions()
+        static std::array<vk::VertexInputAttributeDescription, 2> getAttributeDescriptions()
         {
-            std::array<VkVertexInputAttributeDescription, 2> attributeDescriptions{};
-            attributeDescriptions[0].binding = 0;
-            attributeDescriptions[0].location = 0;
-            attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT; // Size of the attribute. Vec3
-            attributeDescriptions[0].offset = offsetof(Vertex, pos);
+            std::array<vk::VertexInputAttributeDescription, 2> attributeDescs{};
+            attributeDescs[0] = vk::VertexInputAttributeDescription(
+                0, // Binding
+                0, // Location
+                vk::Format::eR32G32B32Sfloat, // Format (3 dimensions)
+                offsetof(Vertex, pos)
+            );
+            attributeDescs[0] = vk::VertexInputAttributeDescription(
+                0, // Binding
+                1, // Location
+                vk::Format::eR32G32Sfloat, // Format (2 dimensions)
+                offsetof(Vertex, uv)
+            );
 
-            attributeDescriptions[1].binding = 0;
-            attributeDescriptions[1].location = 1;
-            attributeDescriptions[1].format = VK_FORMAT_R32G32_SFLOAT;
-            attributeDescriptions[1].offset = offsetof(Vertex, uv);
-
-            return attributeDescriptions;
+            return attributeDescs;
         }
     };
 }
