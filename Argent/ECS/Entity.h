@@ -1,4 +1,4 @@
-#include <ECS.h>
+#include <ECSTypes.h>
 #include <Archetypes.h>
 
 namespace ag

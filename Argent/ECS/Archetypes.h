@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ECS.h>
+#include <ECSTypes.h>
 #include <unordered_map>
 #include <algorithm>
 #include <atomic>
@@ -8,6 +8,18 @@
 
 namespace ag
 {
+	struct EntityInfo
+	{
+		EntityID ID;
+		EntityID ParentID;
+
+		EntityInfo(EntityID id, EntityID p)
+		{
+			ID = id;
+			ParentID = p;
+		}
+	};
+
 	class ArchetypeCollection
 	{
 	public:

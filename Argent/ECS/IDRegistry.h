@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ECS.h>
+#include <ECSTypes.h>
 #include <atomic>
 
 namespace ag

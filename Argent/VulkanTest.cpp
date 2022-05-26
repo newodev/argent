@@ -32,9 +32,8 @@
 #include <ModelLoader.h>
 #include <TextureLoader.h>
 
-#include <IDRegistry.h>
-#include <Archetypes.h>
-#include <Entity.h>
+
+#include <ECS.h>
 
 const std::string MODEL_PATH = "TestModels/viking_room.obj";
 const std::string TEXTURE_PATH = "TestTextures/viking_room.png";

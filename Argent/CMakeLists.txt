@@ -9,7 +9,7 @@ include_directories("D:/gamedev/Libraries/tinyobj/")
 include_directories("D:/Vulkan/Include/")
 
 # Add source to this project's executable.
-add_executable (Argent "Argent.h" "VulkanTest.cpp" "Assets/Vertex.h" "Assets/ModelLoader.h" "Assets/TextureLoader.h" "ECS/ECS.h" "ECS/IDRegistry.h"  "ECS/Archetypes.h" "ECS/Archetypes.cpp"  "ECS/Component.cpp" "Renderer/ArgentVk.h" "ECS/Entity.h")
+add_executable (Argent "Argent.h" "VulkanTest.cpp" "Assets/Vertex.h" "Assets/ModelLoader.h" "Assets/TextureLoader.h" "ECS/ECSTypes.h" "ECS/IDRegistry.h"  "ECS/Archetypes.h" "ECS/Archetypes.cpp"  "ECS/Component.cpp" "Renderer/ArgentVk.h" "ECS/Entity.h" "ECS/ECS.h")
 target_include_directories(Argent PUBLIC "Assets/")
 target_include_directories(Argent PUBLIC "ECS/")
 target_include_directories(Argent PUBLIC "Renderer/")
