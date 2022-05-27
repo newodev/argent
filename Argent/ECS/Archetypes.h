@@ -5,9 +5,11 @@
 #include <algorithm>
 #include <atomic>
 #include <IDRegistry.h>
+#include <Graph.h>
 
 namespace ag
 {
+	struct GraphNode;
 	struct EntityInfo
 	{
 		EntityID ID;
@@ -101,6 +103,8 @@ namespace ag
 		EntityID GetNextID();
 		// The ID of the next entity to spawn
 		EntityID NextEntityID;
+
+		GraphNode * node;
 
 		static std::unordered_map<ArchetypeID, ArchetypeCollection*> archetypes;
 		static std::atomic<ArchetypeID> nextArchetypeID;
