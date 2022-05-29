@@ -45,4 +45,11 @@ int main()
     {
         std::cout << i << ": " << a.GetComponent<A>(i)->a << " " << a.GetComponent<B>(i)->b << std::endl;
     }
+    a.DestroyEntity(1);
+    a.ResolveBuffers();
+    std::cout << "iter: " << std::endl;
+    for (size_t i = 0; i < a.GetEntityCount(); i++)
+    {
+        std::cout << i << ": " << a.GetComponent<A>(i)->a << " " << a.GetComponent<B>(i)->b << std::endl;
+    }
 }

@@ -68,6 +68,8 @@ namespace ag
 
 		int GetEntityCount() { return entities.size(); }
 
+		void DestroyEntity(int index);
+
 		ArchetypeCollection(ComponentSet components);
 
 		static ArchetypeCollection* GetArchetypeFromEntityID(EntityID id);

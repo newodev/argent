@@ -27,6 +27,27 @@ void ag::ArchetypeCollection::ResolveBuffers()
 	ResolveSpawnBuffer();
 }
 
+void ag::ArchetypeCollection::ResolveDestroyBuffer()
+{
+	/// \TODO: Would probably be more cache-friendly if u swapped these loop orders
+	for (size_t i = 0; i < entitiesToDestroy.size(); i++)
+	{
+		entities.erase(std::next(entities.begin(), entitiesToDestroy.at(i)));
+		for (size_t j = 0; j < ComponentTypes.size(); j++)
+		{
+			int componentSize = Component::GetSize(ComponentTypes[j]);
+			auto start = std::next(data[j].begin(), componentSize * entitiesToDestroy[i]);
+			auto end = std::next(start, componentSize);
+			data[j].erase(start, end);
+		}
+	}
+}
+
+void ag::ArchetypeCollection::DestroyEntity(int index)
+{
+	entitiesToDestroy.push_back(index);
+}
+
 void ag::ArchetypeCollection::ResolveSpawnBuffer()
 {
 	// Resize component arrays and copy in new data
@@ -38,10 +59,6 @@ void ag::ArchetypeCollection::ResolveSpawnBuffer()
 	// Add entity tags too
 	entities.insert(entities.end(), entitiesToSpawn.begin(), entitiesToSpawn.end());
 	entitiesToSpawn.clear();
-}
-
-void ag::ArchetypeCollection::ResolveDestroyBuffer()
-{
 }
 
 EntityID ag::ArchetypeCollection::GetNextID()
