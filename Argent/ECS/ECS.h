@@ -1,5 +1,5 @@
 #pragma once
 
-#include <IDRegistry.h>
+#include <Component.h>
 #include <Archetypes.h>
 #include <Entity.h>

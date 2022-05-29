@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <algorithm>
 #include <atomic>
-#include <IDRegistry.h>
+#include <Component.h>
 #include <Archetypes.h>
 
 namespace ag

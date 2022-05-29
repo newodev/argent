@@ -20,8 +20,8 @@ struct B
 };
 int main()
 {
-    ag::ArchetypeCollection a({ ag::IDRegistry::GetComponentID<A>(), ag::IDRegistry::GetComponentID<B>() });
-    ag::ArchetypeCollection b({ ag::IDRegistry::GetComponentID<A>(), ag::IDRegistry::GetComponentID<B>(), ag::IDRegistry::GetComponentID<EntityID>() });
+    ag::ArchetypeCollection a({ ag::Component::GetID<A>(), ag::Component::GetID<B>() });
+    ag::ArchetypeCollection b({ ag::Component::GetID<A>(), ag::Component::GetID<B>(), ag::Component::GetID<EntityID>() });
 
     for (size_t i = 0; i < 4; i++)
     {
@@ -29,6 +29,9 @@ int main()
     }
     EntityID one = a.SpawnEntity(A(1), B(2));
     EntityID two = b.SpawnEntity(A(5), B(3), one);
+
+    a.ResolveBuffers();
+    b.ResolveBuffers();
 
     std::cout << "a: " << one << std::endl;
     std::cout << "b: " << two << std::endl;

@@ -11,15 +11,37 @@ ag::ArchetypeCollection::ArchetypeCollection(ComponentSet components)
 	// Initialises the first entity's ID by mapping the archetype ID into the upper bits
 	NextEntityID = ((EntityID)ID) << EPARTSIZE;
 
-	EntityCount = 0;
-
 	ComponentTypes = components;
 	data = new ComponentArray[ComponentTypes.size()];
+	spawnBuffer = new ComponentArray[ComponentTypes.size()];
 }
 
-void ag::ArchetypeCollection::AddComponent(byte* bytes, int i, int n)
+void ag::ArchetypeCollection::AddComponent(byte* bytes, int i, int n, ComponentArray* target)
 {
-	data[i].insert(data[i].end(), bytes, bytes + n);
+	target[i].insert(target[i].end(), bytes, bytes + n);
+}
+
+void ag::ArchetypeCollection::ResolveBuffers()
+{
+	ResolveDestroyBuffer();
+	ResolveSpawnBuffer();
+}
+
+void ag::ArchetypeCollection::ResolveSpawnBuffer()
+{
+	// Resize component arrays and copy in new data
+	for (size_t i = 0; i < ComponentTypes.size(); i++)
+	{
+		data[i].insert(data[i].end(), spawnBuffer[i].begin(), spawnBuffer[i].end());
+		spawnBuffer[i].clear();
+	}
+	// Add entity tags too
+	entities.insert(entities.end(), entitiesToSpawn.begin(), entitiesToSpawn.end());
+	entitiesToSpawn.clear();
+}
+
+void ag::ArchetypeCollection::ResolveDestroyBuffer()
+{
 }
 
 EntityID ag::ArchetypeCollection::GetNextID()

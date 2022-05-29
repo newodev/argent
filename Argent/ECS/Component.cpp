@@ -1,2 +1,2 @@
-#include <IDRegistry.h>
-std::atomic<ComponentTypeID> ag::IDRegistry::nextComponentID(0);
+#include <Component.h>
+std::atomic<ComponentTypeID> ag::Component::nextComponentID(0);

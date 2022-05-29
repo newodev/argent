@@ -4,8 +4,7 @@
 #include <unordered_map>
 #include <algorithm>
 #include <atomic>
-#include <IDRegistry.h>
-#include <Graph.h>
+#include <Component.h>
 
 namespace ag
 {
@@ -14,12 +13,6 @@ namespace ag
 	{
 		EntityID ID;
 		EntityID ParentID;
-
-		EntityInfo(EntityID id, EntityID p)
-		{
-			ID = id;
-			ParentID = p;
-		}
 	};
 
 	class ArchetypeCollection
@@ -28,8 +21,6 @@ namespace ag
 
 		/// \TODO: Buffer entity spawning
 		/// \TODO: Add+Buffer entity destruction
-
-
 		template <typename... Cs>
 		EntityID SpawnEntity(Cs... component)
 		{
@@ -46,13 +37,14 @@ namespace ag
 		EntityID InstantiateEntity(EntityID parent, Cs... component)
 		{
 			EntityID eid = GetNextID();
-			entities.push_back(EntityInfo(eid, parent));
+			EntityInfo entity;
+			entity.ID = eid;
+			entity.ParentID = parent;
+			entitiesToSpawn.push_back(entity);
 
 			int i = 0;
 			// We assume the components are in the order matching the archetype and add them to each component array
-			(AddComponent((byte*)&component, i++, sizeof(component)), ...);
-
-			EntityCount++;
+			(AddComponent((byte*)&component, i++, sizeof(component), spawnBuffer), ...);
 
 			return eid;
 		}
@@ -62,7 +54,7 @@ namespace ag
 		{
 			size_t stride = sizeof(C);
 			// The component array that stores this component type
-			auto ci = std::find(ComponentTypes.begin(), ComponentTypes.end(), ag::IDRegistry::GetComponentID<C>()) - ComponentTypes.begin();
+			auto ci = std::find(ComponentTypes.begin(), ComponentTypes.end(), ag::Component::GetID<C>()) - ComponentTypes.begin();
 			// Return a pointer to the component
 			return (C*)(&data[ci].at(i * stride));
 		}
@@ -74,7 +66,7 @@ namespace ag
 
 		int GetIndexByID(EntityID id);
 
-		int GetEntityCount() { return EntityCount; }
+		int GetEntityCount() { return entities.size(); }
 
 		ArchetypeCollection(ComponentSet components);
 
@@ -84,21 +76,29 @@ namespace ag
 
 		static void DeregisterArchetype(ArchetypeID id);
 
+		void ResolveBuffers();
 		
 
 	private:
 		ArchetypeID ID;
-		// An array of Component vectors
+		// The entity data stored in this archetype. Each component array is a byte array of a specific component type.
 		ComponentArray* data;
+
+		// Entity creation/destruction buffers
+		ComponentArray* spawnBuffer;
+		std::vector<EntityInfo> entitiesToSpawn;
+
+		std::vector<int> entitiesToDestroy;
+
 		// The component types that make up this archetype
 		ComponentSet ComponentTypes;
-		// The amount of entities currently in the collection
-		int EntityCount;
 
 		// Core entity data (a component that every entity has)
 		std::vector<EntityInfo> entities;
 
-		void AddComponent(byte* bytes, int i, int n);
+		void AddComponent(byte* bytes, int i, int n, ComponentArray* target);
+		void ResolveSpawnBuffer();
+		void ResolveDestroyBuffer();
 
 		EntityID GetNextID();
 		// The ID of the next entity to spawn
