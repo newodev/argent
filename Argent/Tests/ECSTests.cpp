@@ -47,7 +47,14 @@ int main()
     }
     a.DestroyEntity(1);
     a.ResolveBuffers();
-    std::cout << "iter: " << std::endl;
+    std::cout << "after destroying entity 1: " << std::endl;
+    for (size_t i = 0; i < a.GetEntityCount(); i++)
+    {
+        std::cout << i << ": " << a.GetComponent<A>(i)->a << " " << a.GetComponent<B>(i)->b << std::endl;
+    }
+    a.DestroyEntityByID(bpointer);
+    a.ResolveBuffers();
+    std::cout << "after destroying what b points to: " << std::endl;
     for (size_t i = 0; i < a.GetEntityCount(); i++)
     {
         std::cout << i << ": " << a.GetComponent<A>(i)->a << " " << a.GetComponent<B>(i)->b << std::endl;

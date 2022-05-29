@@ -41,12 +41,25 @@ void ag::ArchetypeCollection::ResolveDestroyBuffer()
 			data[j].erase(start, end);
 		}
 	}
+
+	entitiesToDestroy.clear();
 }
 
 void ag::ArchetypeCollection::DestroyEntity(int index)
 {
+	if (index >= entities.size() || index < 0)
+		return;
+
 	entitiesToDestroy.push_back(index);
 }
+
+
+void ag::ArchetypeCollection::DestroyEntityByID(EntityID id)
+{
+	int index = GetIndexByID(id);
+	DestroyEntity(index);
+}
+
 
 void ag::ArchetypeCollection::ResolveSpawnBuffer()
 {
