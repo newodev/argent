@@ -8,16 +8,16 @@ ag::GraphNode* ag::World::TraverseRight(ag::GraphNode* start, ComponentSet diff)
 	GraphNode* position = start;
 
 	// Loop through diff until we've traversed all the way to the desitination
-	while (diff.size() > 0)
+	for (size_t i = 0; i < diff.size(); i++)
 	{
-		ComponentTypeID current = diff.at(0);
+		ComponentTypeID current = diff.at(i);
 		bool found = false;
 		// Search the edges of our position for the next component
-		for (size_t i = 0; i < position->edges.size(); i++)
+		for (size_t j = 0; j < position->edges.size(); j++)
 		{
-			if (position->edges.at(i).diff == current)
+			if (position->edges.at(j).diff == current)
 			{
-				position = position->edges.at(i).right;
+				position = position->edges.at(j).right;
 				found = true;
 				break;
 			}
@@ -36,8 +36,6 @@ ag::GraphNode* ag::World::TraverseRight(ag::GraphNode* start, ComponentSet diff)
 
 			position = newNode;
 		}
-		// Remove the component we just computed
-		diff.erase(diff.begin());
 	}
 
 	return position;

@@ -16,6 +16,12 @@ ag::ArchetypeCollection::ArchetypeCollection(ComponentSet components)
 	spawnBuffer = new ComponentArray[ComponentTypes.size()];
 }
 
+ag::ArchetypeCollection::~ArchetypeCollection()
+{
+	delete[] data;
+	delete[] spawnBuffer;
+}
+
 void ag::ArchetypeCollection::AddComponent(byte* bytes, int i, int n, ComponentArray* target)
 {
 	target[i].insert(target[i].end(), bytes, bytes + n);

@@ -17,6 +17,8 @@ namespace ag
 		C* Get()
 		{
 			int index = archetype->GetIndexByID(ID);
+			if (index == -1)
+				return nullptr;
 			return archetype->GetComponent<C>(index);
 		}
 
