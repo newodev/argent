@@ -45,3 +45,39 @@ vk::DescriptorPool ag::DescriptorAllocator::GrabPool()
 	}
 }
 
+bool ag::DescriptorAllocator::Allocate(vk::DescriptorSet* set, vk::DescriptorSetLayout layout)
+{
+	if (CurrentPool == NULL)
+	{
+		CurrentPool = GrabPool();
+		usedPools.push_back(CurrentPool);
+	}
+
+	std::array layouts{ layout };
+	vk::DescriptorSetAllocateInfo info(
+		CurrentPool, layouts
+	);
+
+	vk::Result result = device.allocateDescriptorSets(&info, set);
+	bool needNewPool = false;
+
+	if (result == vk::Result::eSuccess)
+		return true;
+
+	if (result == vk::Result::eErrorOutOfPoolMemory || result == vk::Result::eErrorFragmentedPool)
+		needNewPool = true;
+
+	if (!needNewPool)
+		return false;
+
+	// Need new pool
+	CurrentPool = GrabPool();
+	usedPools.push_back(CurrentPool);
+	result = device.allocateDescriptorSets(&info, set);
+
+	if (result == vk::Result::eSuccess)
+		return true;
+
+	return false;
+}
+
