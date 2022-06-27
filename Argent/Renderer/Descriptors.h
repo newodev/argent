@@ -2,6 +2,7 @@
 
 #include <vulkan/vulkan.hpp>
 #include <vector>
+#include <unordered_map>
 #include <array>
 #include <utility>
 
@@ -45,5 +46,37 @@ namespace ag
 		PoolSizes descriptorSizes;
 		std::vector<vk::DescriptorPool> usedPools;
 		std::vector<vk::DescriptorPool> freePools;
+	};
+
+	class DescriptorLayoutCache
+	{
+	public:
+
+		void Initialise(vk::Device d);
+		void Cleanup();
+
+		vk::DescriptorSetLayout CreateDescriptorLayout(vk::DescriptorSetLayoutCreateInfo info);
+
+		struct DescriptorLayoutInfo
+		{
+			std::vector<vk::DescriptorSetLayoutBinding> bindings;
+
+			bool operator==(const DescriptorLayoutInfo& other) const;
+
+			size_t hash() const;
+		};
+
+	private:
+
+		struct DescriptorLayoutHash 
+		{
+			std::size_t operator()(const DescriptorLayoutInfo& k) const 
+			{
+				return k.hash();
+			}
+		};
+
+		std::unordered_map<DescriptorLayoutInfo, vk::DescriptorSetLayout, DescriptorLayoutHash> layoutCache;
+		vk::Device device;
 	};
 }

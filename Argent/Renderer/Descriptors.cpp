@@ -81,3 +81,16 @@ bool ag::DescriptorAllocator::Allocate(vk::DescriptorSet* set, vk::DescriptorSet
 	return false;
 }
 
+void ag::DescriptorAllocator::ResetPools()
+{
+	for (vk::DescriptorPool pool : usedPools)
+	{
+		device.resetDescriptorPool(pool);
+		freePools.push_back(pool);
+	}
+
+	usedPools.clear();
+	CurrentPool = vk::DescriptorPool();
+}
+
+///////////////////// DescriptorLayoutCache //////////////////////////
