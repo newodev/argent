@@ -94,3 +94,95 @@ void ag::DescriptorAllocator::ResetPools()
 }
 
 ///////////////////// DescriptorLayoutCache //////////////////////////
+
+void ag::DescriptorLayoutCache::Initialise(vk::Device d)
+{
+	device = d;
+}
+
+void ag::DescriptorLayoutCache::Cleanup()
+{
+	for (auto descriptor : layoutCache)
+	{
+		device.destroyDescriptorSetLayout(descriptor.second);
+	}
+}
+
+vk::DescriptorSetLayout ag::DescriptorLayoutCache::CreateDescriptorLayout(vk::DescriptorSetLayoutCreateInfo* createInfo)
+{
+	DescriptorLayoutInfo info;
+	info.bindings.reserve(createInfo->bindingCount);
+	bool isSorted = true;
+	int lastBinding = -1;
+
+	for (size_t i = 0; i < createInfo->bindingCount; i++)
+	{
+		uint32_t binding = createInfo->pBindings[i].binding;
+		info.bindings.push_back(binding);
+
+		if (binding > lastBinding)
+			lastBinding = binding;
+		else
+			isSorted = false;
+	}
+
+	if (!isSorted)
+	{
+		std::sort(info.bindings.begin(), info.bindings.end(), [](vk::DescriptorSetLayoutBinding& a, vk::DescriptorSetLayoutBinding& b)
+		{
+			return a.binding < b.binding;
+		});
+	}
+
+	auto grab = layoutCache.find(info);
+	if (grab != layoutCache.end())
+	{
+		return (*grab).second;
+	}
+
+	// Create a new layout in the cache
+	vk::DescriptorSetLayout layout;
+	device.createDescriptorSetLayout(createInfo, nullptr, &layout);
+
+	layoutCache[info] = layout;
+	return layout;
+}
+
+bool ag::DescriptorLayoutCache::DescriptorLayoutInfo::operator==(const DescriptorLayoutInfo& other) const
+{
+	if (other.bindings.size() != bindings.size())
+		return false;
+
+	for (size_t i = 0; i < bindings.size(); i++)
+	{
+		bool eq = other.bindings[i].binding != bindings[i].binding
+			|| other.bindings[i].descriptorType != bindings[i].descriptorType
+			|| other.bindings[i].descriptorCount != bindings[i].descriptorCount
+			|| other.bindings[i].stageFlags != bindings[i].stageFlags;
+
+		if (!eq)
+			return false;
+	}
+
+	return true;
+}
+
+size_t ag::DescriptorLayoutCache::DescriptorLayoutInfo::hash() const
+{
+	using std::size_t;
+	using std::hash;
+
+	size_t result = hash<size_t>()(bindings.size());
+	for (const vk::DescriptorSetLayoutBinding& b : bindings)
+	{
+		size_t subhash = b.binding 
+			| (int)b.descriptorType << 8 
+			| (int)b.descriptorCount << 16 
+			| (uint32_t)b.stageFlags << 24;
+
+		result ^= hash<size_t>()(subhash);
+	}
+
+	return result;
+}
+

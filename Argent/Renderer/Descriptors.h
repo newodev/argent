@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <array>
 #include <utility>
+#include <algorithm>
 
 // inspired by github.com/vblanco20-1
 namespace ag
@@ -55,7 +56,7 @@ namespace ag
 		void Initialise(vk::Device d);
 		void Cleanup();
 
-		vk::DescriptorSetLayout CreateDescriptorLayout(vk::DescriptorSetLayoutCreateInfo info);
+		vk::DescriptorSetLayout CreateDescriptorLayout(vk::DescriptorSetLayoutCreateInfo* createInfo);
 
 		struct DescriptorLayoutInfo
 		{
