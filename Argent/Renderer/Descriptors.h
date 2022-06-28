@@ -80,4 +80,24 @@ namespace ag
 		std::unordered_map<DescriptorLayoutInfo, vk::DescriptorSetLayout, DescriptorLayoutHash> layoutCache;
 		vk::Device device;
 	};
+
+	class DescriptorBuilder
+	{
+	public:
+		static DescriptorBuilder Begin(DescriptorLayoutCache* cache, DescriptorAllocator* alloc);
+
+		DescriptorBuilder& BindBuffer(uint32_t binding, vk::DescriptorBufferInfo* info, vk::DescriptorType type, vk::ShaderStageFlags flags);
+		DescriptorBuilder& BindImage(uint32_t binding, vk::DescriptorImageInfo* info, vk::DescriptorType type, vk::ShaderStageFlags flags);
+
+		bool End(vk::DescriptorSet& set, vk::DescriptorSetLayout& layout);
+		bool End(vk::DescriptorSet& set);
+
+	private:
+		std::vector<vk::WriteDescriptorSet> writes;
+		std::vector<vk::DescriptorSetLayoutBinding> bindings;
+
+		DescriptorLayoutCache* layoutCache;
+		DescriptorAllocator* allocator;
+
+	};
 }
