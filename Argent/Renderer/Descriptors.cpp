@@ -186,3 +186,53 @@ size_t ag::DescriptorLayoutCache::DescriptorLayoutInfo::hash() const
 	return result;
 }
 
+////////////////////// Descriptor Builder ///////////////////////
+
+ag::DescriptorBuilder ag::DescriptorBuilder::Begin(ag::DescriptorLayoutCache* cache, ag::DescriptorAllocator* alloc)
+{
+	DescriptorBuilder builder;
+	builder.allocator = alloc;
+	builder.layoutCache = cache;
+	return builder;
+}
+
+ag::DescriptorBuilder& ag::DescriptorBuilder::BindBuffer(uint32_t binding, vk::DescriptorBufferInfo* info, vk::DescriptorType type, vk::ShaderStageFlags flags)
+{
+	vk::DescriptorSetLayoutBinding newBinding(binding, type, 1, flags);
+	bindings.push_back(newBinding);
+
+	vk::WriteDescriptorSet write({}, binding, 0, 1, type, (vk::DescriptorImageInfo*)0, info);
+	writes.push_back(write);
+
+	return *this;
+}
+
+ag::DescriptorBuilder& ag::DescriptorBuilder::BindImage(uint32_t binding, vk::DescriptorImageInfo* info, vk::DescriptorType type, vk::ShaderStageFlags flags)
+{
+	vk::DescriptorSetLayoutBinding newBinding(binding, type, 1, flags);
+	bindings.push_back(newBinding);
+
+	vk::WriteDescriptorSet write({}, binding, 0, 1, type, info);
+	writes.push_back(write);
+
+	return *this;
+}
+
+bool ag::DescriptorBuilder::End(vk::DescriptorSet& set, vk::DescriptorSetLayout& layout)
+{
+	vk::DescriptorSetLayoutCreateInfo info({}, bindings);
+
+	layout = layoutCache->CreateDescriptorLayout(&info);
+
+	bool success = allocator->Allocate(&set, layout);
+
+	if (!success)
+		return false;
+
+	for (vk::WriteDescriptorSet& w : writes)
+	{
+		w.dstSet = set;
+	}
+
+	allocator->device.updateDescriptorSets(writes, 0, nullptr);
+}

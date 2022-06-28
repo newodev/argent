@@ -39,8 +39,9 @@ namespace ag
 		void Initialise(vk::Device d);
 		void Cleanup();
 
-	private:
 		vk::Device device;
+
+	private:
 
 		vk::DescriptorPool GrabPool();
 		vk::DescriptorPool CurrentPool{ nullptr };
