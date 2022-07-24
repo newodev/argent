@@ -9,7 +9,7 @@ include_directories("D:/gamedev/Libraries/tinyobj/")
 include_directories("D:/Vulkan/Include/")
 
 # Add source to this project's executable.
-add_executable (Argent "Argent.h" "VulkanTest.cpp" "Assets/Vertex.h" "Assets/ModelLoader.h" "Assets/TextureLoader.h" "ECS/ECSTypes.h" "ECS/Component.h"  "ECS/Archetypes.h" "ECS/Archetypes.cpp"  "ECS/Component.cpp" "Renderer/ArgentVk.h" "ECS/Entity.h" "ECS/ECS.h" "Tests/ECSTests.cpp" "ECS/Graph.h" "ECS/World.h" "ECS/World.cpp" "Renderer/Descriptors.h" "Renderer/Descriptors.cpp")
+add_executable (Argent "Argent.h" "VulkanTest.cpp" "Assets/Vertex.h" "Assets/ModelLoader.h" "Assets/TextureLoader.h" "ECS/ECSTypes.h" "ECS/Component.h"  "ECS/Archetypes.h" "ECS/Archetypes.cpp"  "ECS/Component.cpp" "Renderer/ArgentVk.h" "ECS/Entity.h" "ECS/ECS.h" "Tests/ECSTests.cpp" "ECS/Graph.h" "ECS/World.h" "ECS/World.cpp" "Renderer/Descriptors.h" "Renderer/Descriptors.cpp" "CVARs.h" "CVARs.cpp")
 target_include_directories(Argent PUBLIC "Assets/")
 target_include_directories(Argent PUBLIC "ECS/")
 target_include_directories(Argent PUBLIC "Renderer/")
